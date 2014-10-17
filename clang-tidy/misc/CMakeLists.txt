@@ -3,6 +3,7 @@ set(LLVM_LINK_COMPONENTS support)
 add_clang_library(clangTidyMiscModule
   ArgumentCommentCheck.cpp
   BoolPointerImplicitConversion.cpp
+  CallVirtualsInConstructor.cpp
   MiscTidyModule.cpp
   SwappedArgumentsCheck.cpp
   UndelegatedConstructor.cpp

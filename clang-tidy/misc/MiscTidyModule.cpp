@@ -17,6 +17,7 @@
 #include "../readability/RedundantSmartptrGet.h"
 #include "ArgumentCommentCheck.h"
 #include "BoolPointerImplicitConversion.h"
+#include "CallVirtualsInConstructor.h"
 #include "SwappedArgumentsCheck.h"
 #include "UndelegatedConstructor.h"
 #include "UnusedRAII.h"
@@ -33,6 +34,8 @@ public:
         "misc-bool-pointer-implicit-conversion");
     CheckFactories.registerCheck<readability::BracesAroundStatementsCheck>(
         "misc-braces-around-statements");
+    CheckFactories.registerCheck<CallVirtualsInConstructor>(
+        "misc-call-virtuals-in-constructor");
     CheckFactories.registerCheck<readability::FunctionSizeCheck>(
         "misc-function-size");
     CheckFactories.registerCheck<readability::RedundantSmartptrGet>(
