@@ -12,9 +12,12 @@ CallVirtualsInConstructor::CallVirtualsInConstructor(StringRef Name,
 void
 CallVirtualsInConstructor::registerMatchers(ast_matchers::MatchFinder *Finder) {
   // match all constructors doing member function calls
-  Finder->addMatcher(
-      constructorDecl(hasDescendant(memberCallExpr().bind("member_call"))),
-      this);
+  Finder->addMatcher(constructorDecl(hasDescendant(memberCallExpr().bind(
+                                         "member_call"))).bind("ctr"),
+                     this);
+  Finder->addMatcher(destructorDecl(hasDescendant(memberCallExpr().bind(
+                                        "member_call"))).bind("dtr"),
+                     this);
 }
 
 void CallVirtualsInConstructor::check(
@@ -27,8 +30,12 @@ void CallVirtualsInConstructor::check(
   if (not member_call->getMethodDecl()->isVirtual())
     return;
 
-  diag(member_call->getLocStart(),
-       "calling virtual member function in constructor");
+  if (Result.Nodes.getNodeAs<CXXConstructorDecl>("ctr"))
+    diag(member_call->getLocStart(),
+         "calling virtual member function in constructor");
+  else if (Result.Nodes.getNodeAs<CXXDestructorDecl>("dtr"))
+    diag(member_call->getLocStart(),
+         "calling virtual member function in destructor");
 }
 } /* tidy */
 } /* clang */
