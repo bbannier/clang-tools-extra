@@ -22,6 +22,7 @@
 #include "UndelegatedConstructor.h"
 #include "UnusedRAII.h"
 #include "UseOverride.h"
+#include "VirtualShadowing.h"
 
 namespace clang {
 namespace tidy {
@@ -46,6 +47,7 @@ public:
         "misc-undelegated-constructor");
     CheckFactories.registerCheck<UnusedRAIICheck>("misc-unused-raii");
     CheckFactories.registerCheck<UseOverride>("misc-use-override");
+    CheckFactories.registerCheck<VirtualShadowing>("misc-virtual-shadowing");
   }
 };
 

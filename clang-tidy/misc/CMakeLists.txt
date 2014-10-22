@@ -9,6 +9,7 @@ add_clang_library(clangTidyMiscModule
   UndelegatedConstructor.cpp
   UnusedRAII.cpp
   UseOverride.cpp
+  VirtualShadowing.cpp
 
   LINK_LIBS
   clangAST
