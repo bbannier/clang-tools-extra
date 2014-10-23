@@ -23,17 +23,22 @@ void VirtualShadowing::registerMatchers(ast_matchers::MatchFinder *Finder) {
 namespace
 {
 bool CandidatePred(const CXXRecordDecl *BaseDefinition, void *UserData) {
-  auto method = reinterpret_cast<const CXXMethodDecl*>(UserData);
-  const std::string &name = method->getNameAsString();
+  const auto method = reinterpret_cast<const CXXMethodDecl *>(UserData);
+  const auto &name = method->getNameAsString();
   for (const auto &base_method : BaseDefinition->methods()) {
     if (base_method->isVirtual())
       continue;
+
     if (name == base_method->getNameAsString())
       return true;
   }
+
+  if (BaseDefinition->forallBases(CandidatePred, UserData))
+    return true;
+
   return false;
 }
-} //namespace
+} // namespace
 
 void
 VirtualShadowing::check(const ast_matchers::MatchFinder::MatchResult &Result) {
