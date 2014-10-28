@@ -8,30 +8,30 @@ struct A {
 
 struct B : public A {
   // CHECK: :[[@LINE+1]]:3: warning: method hides non-virtual function from a base class [misc-virtual-shadowing]
-  virtual void f() {} // match
+  virtual void f() {}
 };
 
 struct C : public B {
-  // CHECK-NOT: :[[@LINE+1]]:0: warning
-  virtual void f() {} // nomatch
+  // CHECK-NOT: :[[@LINE+1]]:3: warning
+  virtual void f() {}
 };
 
 struct D : public B {
-  // CHECK-NOT: :[[@LINE+1]]:0: warning
-  virtual void f() {} // nomatch
+  // CHECK-NOT: :[[@LINE+1]]:3: warning
+  virtual void f() {}
 };
 
 struct E {
-  // CHECK-NOT: :[[@LINE+1]]:0: warning
-  virtual void f() {} // nomatch
+  // CHECK-NOT: :[[@LINE+1]]:3: warning
+  virtual void f() {}
 };
 } // namespace A1
 
 namespace A2 {
 struct A {};
 struct B : public A {
-  // CHECK-NOT: :[[@LINE+1]]:0: warning
-  virtual void f() {} // nomatch
+  // CHECK-NOT: :[[@LINE+1]]:3: warning
+  virtual void f() {}
 };
 } // namespace A2
 
@@ -52,10 +52,19 @@ namespace A4 {
 struct A {
   void f() {}
 };
-struct B {};
+struct B : public A {};
 struct C : public B {
   // CHECK: :[[@LINE+1]]:3: warning: method hides non-virtual function from a base class [misc-virtual-shadowing]
   virtual void f() {}
 };
 } // namespace A4
+
+namespace A5
+{
+struct A {};
+struct B : public A {
+  // CHECK-NOT: :[[@LINE+1]]:3: warning
+  virtual ~B() {}
+};
+} // namespace A5
 

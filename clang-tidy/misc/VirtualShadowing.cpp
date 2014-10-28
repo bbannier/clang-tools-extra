@@ -26,17 +26,15 @@ bool CandidatePred(const CXXRecordDecl *BaseDefinition, void *UserData) {
   const auto method = reinterpret_cast<const CXXMethodDecl *>(UserData);
   const auto &name = method->getNameAsString();
   for (const auto &base_method : BaseDefinition->methods()) {
-    if (base_method->isVirtual())
-      continue;
-
-    if (name == base_method->getNameAsString())
-      return true;
+    // if we find a method with the same name check if it's virtual
+    if (name == base_method->getNameAsString()) {
+      return not base_method->isVirtual();
+    }
   }
 
-  if (BaseDefinition->forallBases(CandidatePred, UserData))
-    return true;
-
-  return false;
+  // if this base has base classes check them also
+  return BaseDefinition->getNumBases() != 0 and
+         BaseDefinition->forallBases(CandidatePred, UserData);
 }
 } // namespace
 
