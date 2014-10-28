@@ -27,10 +27,20 @@ struct B : public A {
 };
 
 struct C {
-  // CHECK-NOT: warning
   C() {
     A a = A(0);
-    a.virt(); // no
+    // CHECK-NOT: :[[@LINE+1]]:5: warning
+    a.virt();
   }
 };
+
+struct D {
+  A a;
+  // CHECK-NOT: :[[@LINE+1]]:23: warning
+  D(int i) : a(i) { a.virt(); }
+};
+
+int main() {
+  D d = D(10);
+}
 

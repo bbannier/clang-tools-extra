@@ -12,14 +12,12 @@ CallVirtualsInConstructor::CallVirtualsInConstructor(StringRef Name,
 void
 CallVirtualsInConstructor::registerMatchers(ast_matchers::MatchFinder *Finder) {
   // match all constructors doing member function calls on this
-  Finder->addMatcher(
-      constructorDecl(hasDescendant(memberCallExpr(hasDescendant(thisExpr()))
-                                        .bind("member_call"))).bind("ctr"),
-      this);
-  Finder->addMatcher(
-      destructorDecl(hasDescendant(memberCallExpr(hasDescendant(thisExpr()))
-                                       .bind("member_call"))).bind("dtr"),
-      this);
+  Finder->addMatcher(constructorDecl(hasDescendant(memberCallExpr().bind(
+                                         "member_call"))).bind("ctr"),
+                     this);
+  Finder->addMatcher(destructorDecl(hasDescendant(memberCallExpr().bind(
+                                        "member_call"))).bind("dtr"),
+                     this);
 }
 
 void CallVirtualsInConstructor::check(
@@ -30,6 +28,9 @@ void CallVirtualsInConstructor::check(
 
   // filter member calls to virtual functions
   if (not member_call->getMethodDecl()->isVirtual())
+    return;
+
+  if (not member_call->getImplicitObjectArgument()->isImplicitCXXThis())
     return;
 
   if (Result.Nodes.getNodeAs<CXXConstructorDecl>("ctr"))
