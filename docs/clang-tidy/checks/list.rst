@@ -46,6 +46,7 @@ Clang-Tidy Checks
    llvm-include-order
    llvm-namespace-comment
    llvm-twine-local
+   mesos-explicit-future
    misc-argument-comment
    misc-assert-side-effect
    misc-assign-operator-signature
