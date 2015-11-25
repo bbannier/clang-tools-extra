@@ -47,6 +47,7 @@ Clang-Tidy Checks
    llvm-namespace-comment
    llvm-twine-local
    mesos-explicit-future
+   mesos-process-on-stack
    mesos-switch-default
    misc-argument-comment
    misc-assert-side-effect

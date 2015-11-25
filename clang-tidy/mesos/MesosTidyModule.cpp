@@ -11,6 +11,7 @@
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
 #include "ExplicitFutureCheck.h"
+#include "ProcessOnStackCheck.h"
 #include "SwitchDefaultCheck.h"
 
 namespace clang {
@@ -22,6 +23,8 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<ExplicitFutureCheck>(
         "mesos-explicit-future");
+    CheckFactories.registerCheck<ProcessOnStackCheck>(
+        "mesos-process-on-stack");
     CheckFactories.registerCheck<SwitchDefaultCheck>(
         "mesos-switch-default");
   }
