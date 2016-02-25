@@ -10,6 +10,7 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+#include "LoopCheck.h"
 
 #include "ExplicitFutureCheck.h"
 #include "IndentionCheck.h"
@@ -24,6 +25,7 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
     CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
+    CheckFactories.registerCheck<LoopCheck>("mesos-loop");
     CheckFactories.registerCheck<SwitchDefaultCheck>("mesos-switch-default");
   }
 };

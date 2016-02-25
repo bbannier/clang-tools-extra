@@ -48,6 +48,7 @@ Clang-Tidy Checks
    llvm-twine-local
    mesos-explicit-future
    mesos-indention
+   mesos-loop
    mesos-switch-default
    misc-argument-comment
    misc-assert-side-effect
