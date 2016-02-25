@@ -10,7 +10,9 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+
 #include "ExplicitFutureCheck.h"
+#include "IndentionCheck.h"
 #include "SwitchDefaultCheck.h"
 
 namespace clang {
@@ -20,10 +22,9 @@ namespace mesos {
 class MesosModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
-    CheckFactories.registerCheck<ExplicitFutureCheck>(
-        "mesos-explicit-future");
-    CheckFactories.registerCheck<SwitchDefaultCheck>(
-        "mesos-switch-default");
+    CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
+    CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
+    CheckFactories.registerCheck<SwitchDefaultCheck>("mesos-switch-default");
   }
 };
 
