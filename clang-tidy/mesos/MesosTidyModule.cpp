@@ -10,6 +10,7 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+#include "AnonymousNamespaceCheck.h"
 #include "ConstVariableCheck.h"
 #include "LoopCheck.h"
 
@@ -24,6 +25,8 @@ namespace mesos {
 class MesosModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
+    CheckFactories.registerCheck<AnonymousNamespaceCheck>(
+        "mesos-anonymous-namespace");
     CheckFactories.registerCheck<ConstVariableCheck>("mesos-const-variable");
     CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
     CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
