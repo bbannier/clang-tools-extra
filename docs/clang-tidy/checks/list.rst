@@ -46,6 +46,7 @@ Clang-Tidy Checks
    llvm-include-order
    llvm-namespace-comment
    llvm-twine-local
+   mesos-const-variable
    mesos-explicit-future
    mesos-indention
    mesos-loop

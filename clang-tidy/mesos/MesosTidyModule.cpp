@@ -10,6 +10,7 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+#include "ConstVariableCheck.h"
 #include "LoopCheck.h"
 
 #include "ExplicitFutureCheck.h"
@@ -23,6 +24,7 @@ namespace mesos {
 class MesosModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
+    CheckFactories.registerCheck<ConstVariableCheck>("mesos-const-variable");
     CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
     CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
     CheckFactories.registerCheck<LoopCheck>("mesos-loop");

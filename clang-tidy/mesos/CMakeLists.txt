@@ -1,6 +1,7 @@
 set(LLVM_LINK_COMPONENTS support)
 
 add_clang_library(clangTidyMesosModule
+  ConstVariableCheck.cpp
   ExplicitFutureCheck.cpp
   IndentionCheck.cpp
   LoopCheck.cpp
