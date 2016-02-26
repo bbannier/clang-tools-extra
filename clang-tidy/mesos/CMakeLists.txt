@@ -7,6 +7,7 @@ add_clang_library(clangTidyMesosModule
   IndentionCheck.cpp
   LoopCheck.cpp
   MesosTidyModule.cpp
+  SmartPointersCheck.cpp
   SwitchDefaultCheck.cpp
 
   LINK_LIBS

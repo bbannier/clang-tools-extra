@@ -13,6 +13,7 @@
 #include "AnonymousNamespaceCheck.h"
 #include "ConstVariableCheck.h"
 #include "LoopCheck.h"
+#include "SmartPointersCheck.h"
 
 #include "ExplicitFutureCheck.h"
 #include "IndentionCheck.h"
@@ -31,6 +32,7 @@ public:
     CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
     CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
     CheckFactories.registerCheck<LoopCheck>("mesos-loop");
+    CheckFactories.registerCheck<SmartPointersCheck>("mesos-smart-pointers");
     CheckFactories.registerCheck<SwitchDefaultCheck>("mesos-switch-default");
   }
 };

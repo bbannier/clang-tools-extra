@@ -51,6 +51,7 @@ Clang-Tidy Checks
    mesos-explicit-future
    mesos-indention
    mesos-loop
+   mesos-smart-pointers
    mesos-switch-default
    misc-argument-comment
    misc-assert-side-effect
