@@ -2,6 +2,7 @@ set(LLVM_LINK_COMPONENTS support)
 
 add_clang_library(clangTidyMesosModule
   AnonymousNamespaceCheck.cpp
+  AutoCheck.cpp
   ConstVariableCheck.cpp
   ExplicitFutureCheck.cpp
   IndentionCheck.cpp

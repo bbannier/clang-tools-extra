@@ -11,6 +11,7 @@
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
 #include "AnonymousNamespaceCheck.h"
+#include "AutoCheck.h"
 #include "ConstVariableCheck.h"
 #include "LoopCheck.h"
 #include "SmartPointersCheck.h"
@@ -28,6 +29,7 @@ public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
     CheckFactories.registerCheck<AnonymousNamespaceCheck>(
         "mesos-anonymous-namespace");
+    CheckFactories.registerCheck<AutoCheck>("mesos-auto");
     CheckFactories.registerCheck<ConstVariableCheck>("mesos-const-variable");
     CheckFactories.registerCheck<ExplicitFutureCheck>("mesos-explicit-future");
     CheckFactories.registerCheck<IndentionCheck>("mesos-indention");
