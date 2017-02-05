@@ -25,12 +25,6 @@ AST_MATCHER(LambdaExpr, capturesThis) {
 }
 
 void ThisCaptureCheck::registerMatchers(MatchFinder *Finder) {
-  const auto dispatcher = callExpr(
-      hasDeclaration(namedDecl(anyOf(hasName("defer"), hasName("dispatch")))));
-
-  const auto undeferredLambda =
-      lambdaExpr(capturesThis(), unless(hasAncestor(dispatcher)));
-
   const auto futureCallbackName = anyOf(
       hasName("after"),
       hasName("onAny"),
@@ -41,21 +35,54 @@ void ThisCaptureCheck::registerMatchers(MatchFinder *Finder) {
       hasName("repair"),
       hasName("then"));
 
+  // Matchers for a this-capturing lambda, or a variable bound to such a lambda.
+  const auto lambda = has(lambdaExpr(capturesThis()).bind("lambda"));
+
+  // Depending on how the callback is being passed and whether it captures
+  // additional variables with non-POD, non-trivial types, an additional
+  // `CXXBindTemporaryExpr` might be emitted.
+  const auto lambdaCapturingThis =
+      anyOf(lambda, has(cxxBindTemporaryExpr(lambda)));
+
+  const auto lambdaCapturingThisRef =
+      declRefExpr(
+          hasDeclaration(varDecl(has(exprWithCleanups(has(cxxConstructExpr(
+              has(materializeTemporaryExpr(lambdaCapturingThis)))))))))
+          .bind("ref");
+
+  // Matcher for process::Future callbacks.
+  // We need two submatchers as `.then` callbacks are passed by const ref,
+  // while all others are passed by rvalue.
+  const auto callbackByConstRef =
+      materializeTemporaryExpr(ignoringImpCasts(has(cxxBindTemporaryExpr(
+          has(ignoringImpCasts(cxxConstructExpr(has(cxxConstructExpr(
+              anyOf(has(materializeTemporaryExpr(lambdaCapturingThis)),
+                    has(ignoringImpCasts(lambdaCapturingThisRef))))))))))));
+
+  const auto callbackByRvalue =
+      anyOf(lambdaCapturingThis, lambdaCapturingThisRef);
+
   Finder->addMatcher(
       cxxMemberCallExpr(hasDeclaration(namedDecl(futureCallbackName)),
                         on(hasType(cxxRecordDecl(hasName("Future")))),
-                        hasDescendant(undeferredLambda.bind("lambda"))),
+                        hasAnyArgument(anyOf(callbackByConstRef,
+                                             callbackByRvalue))),
       this);
 }
 
 void ThisCaptureCheck::check(const MatchFinder::MatchResult &Result) {
-  const auto *lambda = Result.Nodes.getNodeAs<LambdaExpr>("lambda");
+  const auto *ref = Result.Nodes.getNodeAs<Expr>("ref");
+  const auto *lambda = Result.Nodes.getNodeAs<Expr>("lambda");
 
-  if (not lambda)
-    return;
+  diag(ref ? ref->getLocStart() : lambda->getLocStart(),
+       "callback capturing this should be "
+       "dispatched/deferred to a specific PID");
 
-  diag(lambda->getLocStart(), "callback capturing this should be "
-                              "dispatched/deferred to a specific PID");
+  // If the lambda was not declared at the site of the use add a note
+  // at its declaration.
+  if (ref && ref->getExprLoc() != lambda->getExprLoc()) {
+    diag(lambda->getExprLoc(), "declared here", DiagnosticIDs::Note);
+  }
 }
 
 } // namespace mesos
