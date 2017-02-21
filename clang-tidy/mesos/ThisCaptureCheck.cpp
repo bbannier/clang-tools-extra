@@ -68,6 +68,13 @@ void ThisCaptureCheck::registerMatchers(MatchFinder *Finder) {
                         hasAnyArgument(anyOf(callbackByConstRef,
                                              callbackByRvalue))),
       this);
+
+  // Matcher for process::loop.
+  Finder->addMatcher(callExpr(callee(namedDecl(hasName("process::loop"))),
+                              hasAnyArgument(anyOf(
+                                  materializeTemporaryExpr(lambdaCapturingThis),
+                                  lambdaCapturingThisRef))),
+                     this);
 }
 
 void ThisCaptureCheck::check(const MatchFinder::MatchResult &Result) {

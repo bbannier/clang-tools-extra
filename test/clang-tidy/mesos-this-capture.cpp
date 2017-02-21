@@ -26,10 +26,13 @@ struct Future {
 template <typename F>
 Future<Nothing> defer(int pid, F) { return {}; }
 
+template <typename PID, typename Iterate, typename Body>
+Future<Nothing> loop(const PID& pid, Iterate&& iterate, Body&& body);
 } // namespace process  {
 
 using process::Future;
 using process::defer;
+using process::loop;
 
 struct S {
   Future<Nothing> future() const { return {}; }
@@ -89,6 +92,23 @@ struct S {
     }
 
     int i = 0;
+};
+
+struct P {
+  Future<Nothing> future() const { return {}; }
+
+  void f() {
+    // CHECK-MESSAGES: :[[@LINE+1]]:16: warning: callback capturing this should be dispatched/deferred to a specific PID [mesos-this-capture]
+    loop(this, [this]() { (void)this; }, []() {});
+    // CHECK-MESSAGES: :[[@LINE+1]]:25: warning: callback capturing this should be dispatched/deferred to a specific PID [mesos-this-capture]
+    loop(this, []() {}, [this]() { (void)this; });
+
+    auto l = [this]() { (void)this; };
+    // CHECK-MESSAGES: :[[@LINE+1]]:16: warning: callback capturing this should be dispatched/deferred to a specific PID [mesos-this-capture]
+    loop(this, l, []() {});
+    // CHECK-MESSAGES: :[[@LINE+1]]:25: warning: callback capturing this should be dispatched/deferred to a specific PID [mesos-this-capture]
+    loop(this, []() {}, l);
+  }
 };
 
 // Negatives.
